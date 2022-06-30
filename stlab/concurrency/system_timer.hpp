@@ -86,6 +86,19 @@ struct system_timer_type {
 
 #elif STLAB_TASK_SYSTEM(EMSCRIPTEN)
 
+class system_timer {
+public:
+    template <typename F>
+    [[deprecated("Use chrono::duration as parameter instead")]]
+    void operator()(std::chrono::steady_clock::time_point , F&& ) {
+    }
+
+    template <typename F, typename Rep, typename Per = std::ratio<1>>
+    void operator()(std::chrono::duration<Rep, Per> , F&& ) {
+    }
+
+};
+
 /**************************************************************************************************/
 
 #elif STLAB_TASK_SYSTEM(WINDOWS)
@@ -252,7 +265,8 @@ public:
 
 /**************************************************************************************************/
 
-#if STLAB_TASK_SYSTEM(WINDOWS) || STLAB_TASK_SYSTEM(PORTABLE)
+#if STLAB_TASK_SYSTEM(WINDOWS) || STLAB_TASK_SYSTEM(PORTABLE) || STLAB_TASK_SYSTEM(EMSCRIPTEN)
+
 
 struct system_timer_type {
     using result_type = void;
